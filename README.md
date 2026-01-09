@@ -8,7 +8,7 @@ For more information, please also check:
 
 2.) [Video demos](https://youtu.be/z8Eux3UOWc8)
 
-3.) [Training code](https://github.com/JianpengYao/GenSafeNav)
+3.) [Training code](https://github.com/tasl-lab/GenSafeNav)
 
 ## Overview
 
