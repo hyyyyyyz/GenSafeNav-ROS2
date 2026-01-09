@@ -49,10 +49,6 @@ Before running, update the configuration files (e.g., `dr_spaam_ros2/config/dr_s
 
 **Note:** For best results when reproducing real-world experiments, we recommend testing in a large open space.
 
-## Usage
-
-The system supports a combined mode that allows manual override during autonomous navigation, which enables human intervention in emergency situations.
-
 ## Citation
 
 If you find our work useful, please consider citing our paper:
