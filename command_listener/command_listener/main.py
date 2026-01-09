@@ -61,6 +61,8 @@ class CommandListenerNode(Node):
         elif mode == 2:
             msg.data = "mode:automatic"
         elif mode == 3:
+            # Combined mode allows manual override during autonomous navigation,
+            # enabling human intervention in emergency situations.
             msg.data = "mode:combined"
         self.command_publisher_.publish(msg)
         self.get_logger().info(f"Published mode command: {msg.data}")
