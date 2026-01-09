@@ -1,0 +1,8 @@
+dr_spaam_ros2:
+  ros__parameters:
+    weight_file: "/path/to/your/ros2_ws/src/dr_spaam_ros2/model_weight/ckpt_jrdb_ann_ft_dr_spaam_e20.pth"
+    detector_model: "DR-SPAAM"  # DROW3 or DR-SPAAM
+    conf_thresh: 0.95
+    stride: 5  # use this to skip laser points
+    panoramic_scan: True  # Set to true if the scan covers 360 degrees
+
