@@ -1,0 +1,6 @@
+[submodule "pointcloud_to_laserscan"]
+	path = pointcloud_to_laserscan
+	url = https://github.com/XjuHurricaneQuadVision/pointcloud_to_laserscan.git
+[submodule "livox_ros_driver2"]
+	path = livox_ros_driver2
+	url = https://github.com/XjuHurricaneQuadVision/livox_ros_driver2.git

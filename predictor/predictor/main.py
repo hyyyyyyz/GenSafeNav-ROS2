@@ -49,7 +49,7 @@ class Predictor(Node):
                 ('subscriber.tracked_objects_json.queue_size', 10),
 
                 # Model parameters
-                ('model_path', ''),  # Default is empty string
+                ('model_path', 'predictor/model_weight/checkpoint/epoch_100.pt'),  # Default is empty string
                 ('history_length', 5),  # Number of past positions to store
 
                 # Publisher for predictions JSON to decider node

@@ -335,7 +335,8 @@ class selfAttn_merge_SRNN(nn.Module):
 
 
         self.critic_linear = init_(nn.Linear(hidden_size, 1))
-        robot_size = 9        self.robot_linear = nn.Sequential(init_(nn.Linear(robot_size, 256)), nn.ReLU()) # todo: check dim
+        robot_size = 9
+        self.robot_linear = nn.Sequential(init_(nn.Linear(robot_size, 256)), nn.ReLU()) # todo: check dim
         self.human_node_final_linear=init_(nn.Linear(self.output_size,2))
 
         if self.args.use_self_attn:
