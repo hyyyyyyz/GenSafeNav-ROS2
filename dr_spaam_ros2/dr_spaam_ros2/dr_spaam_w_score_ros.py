@@ -9,6 +9,7 @@ from geometry_msgs.msg import Point, Pose, PoseArray
 from visualization_msgs.msg import Marker, MarkerArray
 import time
 import csv
+import torch
 
 from dr_spaam.detector import Detector
 from rclpy.qos import QoSProfile, DurabilityPolicy
@@ -32,6 +33,7 @@ class DrSpaamROS(Node):
                 ('stride', 1),
                 ('detector_model', 'DR-SPAAM'),
                 ('panoramic_scan', True),
+                ('use_gpu', True),  # Added: GPU usage preference
                 ('publisher.detections.topic', '/dr_spaam_detections'),
                 ('publisher.detections.queue_size', 10),
                 ('publisher.detections.latch', False),
@@ -44,12 +46,25 @@ class DrSpaamROS(Node):
         )
         self._read_params()
 
+        # Check CUDA availability and determine device to use
+        cuda_available = torch.cuda.is_available()
+        use_gpu = self.use_gpu and cuda_available
+
+        if self.use_gpu and not cuda_available:
+            self.get_logger().warning(
+                'GPU requested but CUDA not available. Using CPU instead.'
+            )
+
+        self.get_logger().info(
+            f'Using device: {"GPU" if use_gpu else "CPU"}'
+        )
+
         self._detector = Detector(
-            self.weight_file,
-            model=self.detector_model,
-            gpu=True,
+            model_name=self.detector_model,
+            ckpt_file=self.weight_file,
+            gpu=use_gpu,
             stride=self.stride,
-            panoramic_scan=self.panoramic_scan,
+            tracking=False
         )
         self._init()
 
@@ -65,6 +80,7 @@ class DrSpaamROS(Node):
         self.stride = self.get_parameter('stride').value
         self.detector_model = self.get_parameter('detector_model').value
         self.panoramic_scan = self.get_parameter('panoramic_scan').value
+        self.use_gpu = self.get_parameter('use_gpu').value
 
     def _init(self):
         """Initializes publishers and subscribers."""

@@ -1,0 +1,30 @@
+# SORT Multi-Object Tracker Parameters
+sort_tracker_node:
+  ros__parameters:
+    # SORT algorithm parameters
+    sort:
+      max_age: 8            # Maximum frames to keep alive a track without detections
+      min_hits: 4           # Minimum hits before a track is confirmed
+      iou_threshold: 0.01   # IOU threshold for matching detections to tracks
+    
+    # Topic configuration
+    publisher:
+      tracks:
+        topic: "/tracked_objects"
+        queue_size: 10
+        latch: false
+      
+      tracks_viz:
+        topic: "/tracked_objects_viz"
+        queue_size: 10
+        latch: false
+      
+      tracks_json:
+        topic: "/tracked_objects_json"
+        queue_size: 10
+        latch: false
+    
+    subscriber:
+      detections:
+        topic: "/dr_spaam_detections"
+        queue_size: 10

@@ -5,4 +5,5 @@ dr_spaam_ros2:
     conf_thresh: 0.95
     stride: 5  # use this to skip laser points
     panoramic_scan: True  # Set to true if the scan covers 360 degrees
+    use_gpu: False  # Set to True if CUDA is available, False for CPU-only
 

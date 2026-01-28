@@ -49,7 +49,7 @@ class Predictor(Node):
                 ('subscriber.tracked_objects_json.queue_size', 10),
 
                 # Model parameters
-                ('model_path', 'predictor/model_weight/checkpoint/epoch_100.pt'),  # Default is empty string
+                ('model_path', '/home/hyz/Project/ros_ws/src/GenSafeNav-ROS2/predictor/model_weight'),  # Model directory (not the .pt file)
                 ('history_length', 5),  # Number of past positions to store
 
                 # Publisher for predictions JSON to decider node
@@ -161,6 +161,11 @@ class Predictor(Node):
         self.history_length = self.get_parameter('history_length').value
 
     def reset(self):
+        # Check if model was successfully loaded
+        if not hasattr(self, 'args') or self.args is None:
+            self.get_logger().error("[Predictor] Cannot reset - model not loaded properly. Skipping reset.")
+            return
+
         # Create the Human objects (IDs from 0..49)
         self.max_human_num = 50
         self.humans = [Human(id=i, x=15.0, y=15.0) for i in range(self.max_human_num)]

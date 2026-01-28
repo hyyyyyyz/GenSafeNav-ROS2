@@ -1,0 +1,32 @@
+# DR-SPAAM Person Detector Parameters
+dr_spaam_ros2:
+  ros__parameters:
+    # Model configuration
+    weight_file: "/home/hyz/Project/ros_ws/install/dr_spaam_ros2/share/dr_spaam_ros2/model_weight/dr_spaam_e40.pth"
+    detector_model: "DR-SPAAM"  # Options: "DR-SPAAM", "DROW3"
+    
+    # Detection parameters
+    conf_thresh: 0.95       # Confidence threshold for detections
+    stride: 5               # Stride for laser point sampling (higher = faster but less accurate)
+    
+    # Sensor configuration
+    panoramic_scan: true    # Set true for 360-degree lidars (like Livox MID360)
+    
+    # Hardware configuration
+    use_gpu: false          # Set true if CUDA is available, false for CPU-only
+    
+    # Topic configuration
+    publisher:
+      detections:
+        topic: "/dr_spaam_detections"
+        queue_size: 10
+        latch: false
+      rviz:
+        topic: "/dr_spaam_rviz"
+        queue_size: 10
+        latch: false
+    
+    subscriber:
+      scan:
+        topic: "/scan"
+        queue_size: 10
