@@ -2,7 +2,7 @@
 dr_spaam_ros2:
   ros__parameters:
     # Model configuration
-    weight_file: "/home/hyz/Project/ros_ws/install/dr_spaam_ros2/share/dr_spaam_ros2/model_weight/dr_spaam_e40.pth"
+    weight_file: "/home/hyz/Project/ros_ws/install/dr_spaam_ros2/share/dr_spaam_ros2/model_weight/ckpt_jrdb_ann_ft_dr_spaam_e20.pth"
     detector_model: "DR-SPAAM"  # Options: "DR-SPAAM", "DROW3"
     
     # Detection parameters

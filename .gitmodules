@@ -4,3 +4,6 @@
 [submodule "livox_ros_driver2"]
 	path = livox_ros_driver2
 	url = https://github.com/XjuHurricaneQuadVision/livox_ros_driver2.git
+[submodule "FAST_LIO"]
+	path = FAST_LIO
+	url = https://github.com/XjuHurricaneQuadVision/FAST_LIO.git

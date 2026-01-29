@@ -1,16 +1,3 @@
-#!/usr/bin/env python3
-"""
-GenSafeNav ROS2 Bringup Launch File
-
-This launch file starts the complete GenSafeNav pipeline:
-1. Livox LiDAR driver (MID360)
-2. PointCloud to LaserScan converter
-3. DR-SPAAM person detector
-4. SORT multi-object tracker
-5. Trajectory predictor
-6. (Optional) RViz visualization
-"""
-
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -24,16 +11,18 @@ def generate_launch_description():
     # Get package directories
     bringup_dir = get_package_share_directory('gensafenav_ros2_bringup')
     livox_dir = get_package_share_directory('livox_ros_driver2')
+    fast_lio_dir = get_package_share_directory('fast_lio')
 
     # Configuration files
     dr_spaam_config = os.path.join(bringup_dir, 'config', 'dr_spaam_params.yaml')
     sort_tracker_config = os.path.join(bringup_dir, 'config', 'sort_tracker_params.yaml')
     pointcloud_config = os.path.join(bringup_dir, 'config', 'pointcloud_to_laserscan_params.yaml')
     livox_config_path = os.path.join(livox_dir, 'config', 'MID360_config.json')
+    fast_lio_config = os.path.join(fast_lio_dir, 'config', 'mid360.yaml')
 
     # Livox ROS2 parameters
     livox_ros2_params = [
-        {"xfer_format": 0},        # 0-PointCloud2(PointXYZRTL)
+        {"xfer_format": 4},        # 0-PointCloud2(PointXYZRTL)
         {"multi_topic": 0},        # 0-All LiDARs share the same topic
         {"data_src": 0},           # 0-lidar
         {"publish_freq": 10.0},    # 10 Hz
@@ -76,7 +65,18 @@ def generate_launch_description():
     )
 
     # ====================
-    # 1. PointCloud to LaserScan Converter
+    # 1. FAST-LIO (Odometry and Mapping)
+    # ====================
+    fast_lio_node = Node(
+        package='fast_lio',
+        executable='fastlio_mapping',
+        name='fastlio_mapping',
+        parameters=[fast_lio_config],
+        output='screen'
+    )
+
+    # ====================
+    # 2. PointCloud to LaserScan Converter
     # ====================
     pointcloud_to_laserscan_node = Node(
         package='pointcloud_to_laserscan',
@@ -91,7 +91,7 @@ def generate_launch_description():
     )
 
     # ====================
-    # 2. DR-SPAAM Person Detector
+    # 3. DR-SPAAM Person Detector
     # ====================
     dr_spaam_node = Node(
         package='dr_spaam_ros2',
@@ -102,7 +102,7 @@ def generate_launch_description():
     )
 
     # ====================
-    # 3. SORT Tracker
+    # 4. SORT Tracker
     # ====================
     sort_tracker_node = Node(
         package='sort_tracker',
@@ -113,7 +113,7 @@ def generate_launch_description():
     )
 
     # ====================
-    # 4. Trajectory Predictor
+    # 5. Trajectory Predictor
     # ====================
     predictor_node = Node(
         package='predictor',
@@ -144,30 +144,36 @@ def generate_launch_description():
         # 0. Start Livox first
         livox_driver_node,
 
-        # 1. Wait 3s for Livox to initialize, then start pointcloud converter
+        # 1. Wait 2s for Livox to initialize, then start FAST-LIO
+        TimerAction(
+            period=2.0,
+            actions=[fast_lio_node]
+        ),
+
+        # 2. Wait 3s, then start pointcloud converter
         TimerAction(
             period=3.0,
             actions=[pointcloud_to_laserscan_node]
         ),
 
-        # 2. Wait 4s, then start DR-SPAAM detector
+        # 3. Wait 4s, then start DR-SPAAM detector
         TimerAction(
             period=4.0,
             actions=[dr_spaam_node]
         ),
 
-        # 3. Wait 5s, then start SORT tracker
+        # 4. Wait 5s, then start SORT tracker
         TimerAction(
             period=5.0,
             actions=[sort_tracker_node]
         ),
 
-        # 4. Wait 6s, then start predictor
+        # 5. Wait 6s, then start predictor
         TimerAction(
             period=6.0,
             actions=[predictor_node]
         ),
 
-        # 5. Start RViz immediately (optional)
+        # 6. Start RViz immediately (optional)
         rviz_node,
     ])
