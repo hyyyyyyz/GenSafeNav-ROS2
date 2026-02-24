@@ -11,6 +11,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     gnupg2 \
     lsb-release \
     software-properties-common \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # ── 配置 locale ───────────────────────────────────────────────────────────────
@@ -42,6 +43,10 @@ RUN rosdep init && \
     sed -i 's|raw.githubusercontent.com/ros/rosdistro/master|mirrors.tuna.tsinghua.edu.cn/rosdistro|g' \
         /etc/ros/rosdep/sources.list.d/20-default.list && \
     rosdep update --rosdistro humble
+
+# ── 安装 dr_spaam（2D lidar 行人检测库）─────────────────────────────────────
+RUN git clone https://github.com/VisualComputingInstitute/2D_lidar_person_detection.git /opt/2D_lidar_person_detection && \
+    pip install -e /opt/2D_lidar_person_detection/dr_spaam
 
 # ── 工作目录 & 自动 source ────────────────────────────────────────────────────
 WORKDIR /ros2_ws
