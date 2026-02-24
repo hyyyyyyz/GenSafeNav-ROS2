@@ -9,7 +9,6 @@
 *.ipynb_checkpoints
 *.pkl
 *.png
-*.pth
 *.pyc
 *.tfevents*
 
