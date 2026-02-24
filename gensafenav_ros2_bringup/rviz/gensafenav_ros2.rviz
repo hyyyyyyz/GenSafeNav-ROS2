@@ -47,6 +47,26 @@ Visualization Manager:
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
       Value: true
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+        livox_frame:
+          Value: true
+        odom:
+          Value: true
+      Marker Scale: 3
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: false
+      Tree:
+        odom:
+          livox_frame:
+            {}
+      Update Interval: 0
+      Value: true
     - Class: rviz_default_plugins/MarkerArray
       Enabled: true
       Name: MarkerArray
@@ -163,7 +183,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 62.59761428833008
+      Distance: 14.169084548950195
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -178,10 +198,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8203978538513184
+      Pitch: 0.8853980302810669
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.603596210479736
+      Yaw: 4.588578701019287
     Saved: ~
 Window Geometry:
   Displays:
