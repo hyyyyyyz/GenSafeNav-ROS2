@@ -1,67 +1,58 @@
 # GenSafeNav-ROS2
 
-This is the ROS2 deployment codebase for the paper: _[Towards Generalizable Safety in Crowd Navigation via Conformal Uncertainty Handling](https://arxiv.org/abs/2508.05634v1)_.
+## 简介
 
-For more information, please also check:
+该仓库是用于在真实机器人上部署 GenSafeNav 策略的 ROS2 系统。它集成了行人检测、跟踪、轨迹预测和基于强化学习的决策制定，以实现安全的人群导航。
 
-1.) [Project website](https://gen-safe-nav.github.io/)
-
-2.) [Video demos](https://youtu.be/z8Eux3UOWc8)
-
-3.) [Training code](https://github.com/tasl-lab/GenSafeNav)
-
-## Overview
-
-This repository contains the ROS2 system for deploying the GenSafeNav policy on a real robot. It integrates pedestrian detection, tracking, trajectory prediction, and RL-based decision making for safe crowd navigation.
-
-## Components
+## 项目结构
 
 ```
 .
-├── decider/                 # RL-based decision making module
-│   ├── decider/             # Main ROS2 node
-│   ├── rl/networks/         # Policy network (selfAttn_srnn)
-│   ├── config/              # Configuration files
-│   └── model_weight/        # Pre-trained model (ours.pt)
-├── predictor/               # Trajectory prediction module
-│   ├── predictor/           # Main ROS2 node with DtACI
-│   └── gst_updated/         # Gumbel Social Transformer
-├── dr_spaam_ros2/           # 2D LiDAR person detection (DR-SPAAM)
-├── sort_tracker/            # Multi-object tracking (SORT)
-├── command_listener/        # User command interface
-├── frequency_monitor/       # System performance monitoring
-└── fake_detection/          # Simulation utilities
+├── decider/                 # 基于强化学习（RL）的决策模块
+│   ├── decider/             # ROS2 主节点
+│   ├── rl/networks/         # 策略网络 (selfAttn_srnn 架构)
+│   ├── config/              # 配置文件
+│   └── model_weight/        # 预训练模型权重 (ours.pt)
+├── predictor/               # 轨迹预测模块
+│   ├── predictor/           # 集成 DtACI 的 ROS2 主节点
+│   └── gst_updated/         # Gumbel Social Transformer 模型
+├── dr_spaam_ros2/           # 2D 激光雷达行人检测 (DR-SPAAM)
+├── sort_tracker/            # 多目标追踪 (SORT)
+├── command_listener/        # 用户指令接口
+├── frequency_monitor/       # 系统性能监控
+├── fake_detection/          # 仿真测试工具
+├── docker/                  # docker启动文件
+├── FAST_LIO/                # 里程计模块
+├── gensafenav_ros2_bringup  # 项目总启动文件
+├── livox_ros_driver2        # mid-360雷达驱动模块
+└── pointcloud_to_laserscan  # 点云格式转换模块
 ```
 
-## Setup
+## 简单开始
 
-This package requires ROS2 (tested on **Foxy**). Clone into your ROS2 workspace and build using the standard procedure:
+本项目基于 docker 构建运行，由于镜像限制，目前不适用于50系列显卡（因为架构的改变），目前环境只在 RTX 4070 上测试，docekr 容器中安装的 ROS2 版本为 humble。
+
+### 环境准备
 
 ```bash
-cd ~/ros2_ws/src
-git clone <repository_url>
-cd ..
-colcon build
+git clone --recursive https://github.com/hyyyyyyz/GenSafeNav-ROS2.git
+cd GenSafeNav-ROS2/docker
+sudo chmod +x ./build.sh
+sudo ./build
+```
+
+### 项目编译
+
+```bash
+colcon build --symlink-install
+```
+
+### 运行
+
+```bash
 source install/setup.bash
+ros2 launch gensafenav_ros2_bringup gensafenav_ros2_bringup.launch.py 
 ```
 
-Before running, update the configuration files (e.g., `dr_spaam_ros2/config/dr_spaam_ros2.yaml`) with your local paths.
-
-**Note:** For best results when reproducing real-world experiments, we recommend testing in a large open space.
-
-## Citation
-
-If you find our work useful, please consider citing our paper:
-
-```bibtex
-@inproceedings{yao2025towards,
-    title={Towards Generalizable Safety in Crowd Navigation via Conformal Uncertainty Handling},
-    author={Yao, Jianpeng and Zhang, Xiaopan and Xia, Yu and Roy-Chowdhury, Amit K and Li, Jiachen},
-    booktitle={Conference on Robot Learning (CoRL)},
-    year={2025}
-}
-```
-
-## Acknowledgement
-
-We sincerely thank the researchers and developers for [CrowdNav](https://github.com/vita-epfl/CrowdNav), [CrowdNav++](https://github.com/Shuijing725/CrowdNav_Prediction_AttnGraph), [Gumbel Social Transformer](https://sites.google.com/view/gumbel-social-transformer), [DtACI](https://github.com/isgibbs/DtACI), [DR-SPAAM](https://github.com/VisualComputingInstitute/DR-SPAAM-Detector), and [OmniSafe](https://github.com/PKU-Alignment/omnisafe) for their amazing work.
+## 致谢
+本项目是基于[GenSafeNav-ROS2](https://github.com/tasl-lab/GenSafeNav-ROS2)的二次开发，主要方便大家在目前通用的 ROS2-humble 版本上进行开发。
