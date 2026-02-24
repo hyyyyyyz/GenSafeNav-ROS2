@@ -162,7 +162,7 @@ class SortTrackerNode(Node):
 
     def _build_json_message(self, trackers, header):
         """
-        Build a JSON string with each track's {id, x, y, timestamp}.
+        Build a JSON string with each track's {id, x, y, vx, vy, timestamp}.
         We'll publish it in a std_msgs/String.
         """
         # Convert ROS time to float seconds
@@ -172,7 +172,7 @@ class SortTrackerNode(Node):
 
         track_list = []
         for d in trackers:
-            x1, y1, x2, y2, track_id = d
+            x1, y1, x2, y2, track_id, vx, vy = d
             x_center = float((x1 + x2) / 2.0)
             y_center = float((y1 + y2) / 2.0)
 
@@ -180,6 +180,8 @@ class SortTrackerNode(Node):
                 "id": int(track_id),
                 "x": x_center,
                 "y": y_center,
+                "vx": float(vx),
+                "vy": float(vy),
                 "timestamp": timestamp_sec
             }
             track_list.append(track_info)
@@ -219,7 +221,7 @@ def trackers_to_pose_array(trackers):
     pose_array = PoseArray()
     pose_array.header.frame_id = 'laser'  # Ensure frame_id is set to 'laser'
     for d in trackers:
-        x1, y1, x2, y2, track_id = d
+        x1, y1, x2, y2, track_id = d[:5]
         p = Pose()
         p.position.x = float((x1 + x2) / 2.0)
         p.position.y = float((y1 + y2) / 2.0)
@@ -232,7 +234,7 @@ def trackers_to_rviz_markers(trackers, header):
     """Convert tracker outputs to RViz MarkerArray messages."""
     marker_array = MarkerArray()
     for d in trackers:
-        x1, y1, x2, y2, track_id = d
+        x1, y1, x2, y2, track_id = d[:5]
 
         # Box marker as cube
         box_marker = Marker()

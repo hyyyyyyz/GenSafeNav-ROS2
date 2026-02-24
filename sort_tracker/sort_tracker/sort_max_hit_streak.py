@@ -163,6 +163,12 @@ class KalmanBoxTracker(object):
         """
         return convert_x_to_bbox(self.kf.x)
 
+    def get_velocity(self):
+        """
+        Returns the current velocity estimate (vx, vy) from the Kalman filter state.
+        """
+        return float(self.kf.x[4]), float(self.kf.x[5])
+
     def get_detect_ratio(self):
         if self.total_timesteps == 0:
             return 0
@@ -277,14 +283,15 @@ class Sort(object):
             d = trk.get_state()[0]
             if (trk.time_since_update < self.max_age) and \
                ((trk.get_detect_ratio() > 0.9 or trk.hit_streak >= self.min_hits) or self.frame_count <= self.min_hits):
-                ret.append(np.concatenate((d, [trk.id])).reshape(1, -1))
+                vx, vy = trk.get_velocity()
+                ret.append(np.concatenate((d, [trk.id, vx, vy])).reshape(1, -1))
             # Remove dead tracklet
             if trk.time_since_update > self.max_age:
                 self.available_ids.append(trk.id)
                 self.trackers.pop(i)
         if len(ret) > 0:
             return np.concatenate(ret)
-        return np.empty((0, 5))
+        return np.empty((0, 7))
 
     def update_with_valid_unmatched_trks(self, dets=np.empty((0, 5))):
         """
@@ -341,14 +348,15 @@ class Sort(object):
             d = trk.get_state()[0]
             if (trk.time_since_update < self.max_age) and \
                ((trk.get_detect_ratio() > 0.9 or trk.max_hit_streak >= self.min_hits) or self.frame_count <= self.min_hits):
-                ret.append(np.concatenate((d, [trk.id])).reshape(1, -1))
+                vx, vy = trk.get_velocity()
+                ret.append(np.concatenate((d, [trk.id, vx, vy])).reshape(1, -1))
             # Remove dead tracklets
             if trk.time_since_update > self.max_age:
                 self.available_ids.append(trk.id)
                 self.trackers.pop(i)
         if len(ret) > 0:
             return np.concatenate(ret)
-        return np.empty((0, 5))
+        return np.empty((0, 7))
 
 def parse_args():
     """Parse input arguments."""

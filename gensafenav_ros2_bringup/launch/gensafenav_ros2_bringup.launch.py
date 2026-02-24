@@ -34,7 +34,7 @@ def generate_launch_description():
         )
     )
 
-    # ── 2. FAST-LIO mapping (RViz disabled; we use our own) ────────────────
+    # ── 2. FAST-LIO mapping ────────────────
     fast_lio_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(fast_lio_pkg, 'launch', 'mapping.launch.py')
