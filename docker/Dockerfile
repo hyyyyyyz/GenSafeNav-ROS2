@@ -31,10 +31,20 @@ RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
 # ── 安装 ROS 2 Humble ─────────────────────────────────────────────────────────
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     ros-humble-desktop \
+    ros-humble-pcl-ros \
+    ros-humble-tf-transformations \
     python3-colcon-common-extensions \
     python3-rosdep \
     python3-argcomplete \
     && rm -rf /var/lib/apt/lists/*
+
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple \
+    catkin_pkg \
+    "empy==3.3.4" \
+    lark \
+    osrf_pycommon \
+    transforms3d \
+    filterpy
 
 # ── 初始化 rosdep（清华 rosdistro 镜像）────────────────────────────────────────
 ENV ROSDISTRO_INDEX_URL=https://mirrors.tuna.tsinghua.edu.cn/rosdistro/index-v4.yaml
@@ -46,12 +56,17 @@ RUN rosdep init && \
 
 # ── 安装 dr_spaam（2D lidar 行人检测库）─────────────────────────────────────
 RUN git clone https://github.com/VisualComputingInstitute/2D_lidar_person_detection.git /opt/2D_lidar_person_detection && \
-    pip install -e /opt/2D_lidar_person_detection/dr_spaam
+    pip install /opt/2D_lidar_person_detection/dr_spaam
+
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple "numpy==1.23.5"
+
+RUN ln -sf /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /opt/conda/lib/libstdc++.so.6
 
 # ── 工作目录 & 自动 source ────────────────────────────────────────────────────
 WORKDIR /ros2_ws
 
 RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc && \
+    echo "export PYTHONPATH=/opt/conda/lib/python3.10/site-packages:\${PYTHONPATH}" >> /root/.bashrc && \
     echo "[[ -f /ros2_ws/install/setup.bash ]] && source /ros2_ws/install/setup.bash" >> /root/.bashrc
 
 CMD ["/bin/bash"]

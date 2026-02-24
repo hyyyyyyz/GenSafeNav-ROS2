@@ -11,7 +11,7 @@ import time
 import csv
 
 from dr_spaam.detector import Detector
-from rclpy.qos import QoSProfile, DurabilityPolicy
+from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy
 
 # ===== MODIFIED / NEW LINES =====
 # TF libraries for looking up and applying transforms
@@ -95,6 +95,7 @@ class DrSpaamROS(Node):
         scan_queue_size = self.get_parameter('subscriber.scan.queue_size').value
 
         scan_qos = QoSProfile(depth=scan_queue_size)
+        scan_qos.reliability = ReliabilityPolicy.BEST_EFFORT
 
         self._scan_sub = self.create_subscription(
             LaserScan, scan_topic, self._scan_callback, scan_qos
