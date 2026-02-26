@@ -25,7 +25,8 @@
 ├── FAST_LIO/                # 里程计模块
 ├── gensafenav_ros2_bringup  # 项目总启动文件
 ├── livox_ros_driver2        # mid-360雷达驱动模块
-└── pointcloud_to_laserscan  # 点云格式转换模块
+├── pointcloud_to_laserscan  # 点云格式转换模块
+└── pointcloud_process       # 点云特征处理模块
 ```
 
 ## 简单开始
@@ -48,6 +49,16 @@ colcon build --symlink-install
 ```
 
 ### 运行
+
+本项目直接使用一个总启动文件来启动需要的功能包，执行以下命令会启动这几个功能包：
+- livox_ros_driver2
+- FAST_LIO
+- pointcloud_to_laserscan
+- dr_spaam_ros2
+- sort_tracker
+- predictor
+- pointcloud_process
+- rviz2
 
 ```bash
 source install/setup.bash

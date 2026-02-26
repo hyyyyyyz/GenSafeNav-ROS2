@@ -13,6 +13,7 @@ def generate_launch_description():
     livox_pkg       = get_package_share_directory('livox_ros_driver2')
     fast_lio_pkg    = get_package_share_directory('fast_lio')
     pc2ls_pkg       = get_package_share_directory('pointcloud_to_laserscan')
+    pc_process_pkg  = get_package_share_directory('pointcloud_process')
     dr_spaam_pkg    = get_package_share_directory('dr_spaam_ros2')
     sort_pkg        = get_package_share_directory('sort_tracker')
     predictor_pkg   = get_package_share_directory('predictor')
@@ -73,7 +74,14 @@ def generate_launch_description():
         )
     )
 
-    # ── 7. RViz2 ───────────────────────────────────────────────────────────
+    # ── 7. Pointcloud process ────────────────────────────────────────────
+    pc_process_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pc_process_pkg, 'launch', 'pointcloud_process.launch.py')
+        )
+    )
+
+    # ── 8. RViz2 ───────────────────────────────────────────────────────────
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
@@ -91,5 +99,6 @@ def generate_launch_description():
         dr_spaam_launch,
         sort_launch,
         predictor_launch,
+        pc_process_launch,
         rviz_node,
     ])
